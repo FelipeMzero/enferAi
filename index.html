@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Apoio à Enfermagem com IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <i class="fa-solid fa-staff-snake logo-icon"></i>
+            <h2>EnferIA</h2>
+        </div>
+        <div class="user-info">
+            <div class="notification">
+                <i class="fa-regular fa-bell"></i>
+                <div class="notification-badge"></div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 40px; height: 40px; background-color: var(--blue-primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold;">
+                    JS
+                </div>
+                <div>
+                    <div style="font-weight: 600;">João Silva</div>
+                    <div style="font-size: 0.75rem; color: var(--gray-medium);">Enfermeiro</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="dashboard-title">Dashboard de Priorização</h1>
+        
+        <div class="summary-cards">
+            <div class="card">
+                <div class="card-title">Total de Pacientes</div>
+                <div class="card-value" id="total-pacientes">0</div>
+                <div class="card-subtitle" style="color: var(--gray-medium);">Plantão atual</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Pacientes Críticos</div>
+                <div class="card-value" id="total-criticos" style="color: var(--red);">0</div>
+                <div class="card-subtitle" style="color: var(--red);">Requerem atenção imediata</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Pacientes Estáveis</div>
+                <div class="card-value" id="total-estaveis" style="color: var(--green);">0</div>
+                <div class="card-subtitle" style="color: var(--green);">Rotina padrão</div>
+            </div>
+        </div>
+
+        <div class="patient-list-header">
+            <h2>Lista de Pacientes (Prioridade IA)</h2>
+            <button class="btn btn-ia" onclick="atualizarPrioridades()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                Atualizar Prioridades
+            </button>
+        </div>
+
+        <div class="patient-list" id="patient-list-container">
+            <!-- Patient cards will be rendered here by JS -->
+            <div style="text-align: center; padding: 2rem; color: var(--gray-medium);">
+                <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                <p style="margin-top: 1rem;">Carregando dados dos pacientes...</p>
+            </div>
+        </div>
+    </main>
+
+    <button class="fab" title="Nova Evolução por Voz" onclick="openVoz()">
+        <i class="fa-solid fa-microphone"></i>
+    </button>
+
+    <!-- Modals Container -->
+    <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+
+    <!-- Modal IA Assist -->
+    <div id="modal-ia" class="modal hidden">
+        <div class="modal-header">
+            <h3 id="modal-ia-title">IA Assist - Paciente</h3>
+            <button class="close-btn" onclick="closeModal('modal-ia')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('busca')">Busca Inteligente</button>
+                <button class="tab-btn" onclick="switchTab('calculo')">Cálculo de Dosagem</button>
+            </div>
+            
+            <div id="tab-busca" class="tab-content active">
+                <div class="chat-container">
+                    <!-- Chat messages injetadas via JS -->
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="ia-search-input" placeholder="Ex: Qual a última creatinina?">
+                    <button class="btn btn-ia" onclick="simulateIASearch()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <div id="tab-calculo" class="tab-content hidden">
+                <div class="form-group">
+                    <label>Medicamento</label>
+                    <input type="text" id="calc-med" placeholder="Ex: Furosemida">
+                </div>
+                <div class="form-group">
+                    <label>Dose prescrita</label>
+                    <input type="text" id="calc-dose" placeholder="Ex: 40mg">
+                </div>
+                <button class="btn btn-ia w-100" onclick="simulateIACalculation()">Validar Dosagem</button>
+                
+                <div id="calc-result" class="calc-result hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Prontuário -->
+    <div id="modal-prontuario" class="modal hidden">
+        <div class="modal-header">
+            <h3 id="modal-prontuario-title">Prontuário</h3>
+            <button class="close-btn" onclick="closeModal('modal-prontuario')">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-prontuario-body">
+            <!-- Rendered via JS -->
+        </div>
+    </div>
+
+    <!-- Modal Evolução por Voz -->
+    <div id="modal-voz" class="modal hidden">
+        <div class="modal-header">
+            <h3>Evolução por Voz</h3>
+            <button class="close-btn" onclick="closeModal('modal-voz')">&times;</button>
+        </div>
+        <div class="modal-body text-center">
+            <div class="mic-container" id="mic-animation" onclick="toggleRecording()">
+                <i class="fa-solid fa-microphone mic-icon"></i>
+            </div>
+            <p id="mic-status" class="mt-2">Clique no microfone para falar</p>
+            
+            <div class="transcription-box mt-3 text-left">
+                <textarea id="transcription-text" rows="4" placeholder="A transcrição aparecerá aqui..."></textarea>
+            </div>
+            <button class="btn btn-primary mt-3 w-100" onclick="saveEvolucao()">Salvar no Prontuário</button>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+id,nome,idade,leito,risco,tarefa_pendente,creatinina,alergias,peso,funcao_renal
+1,Maria Oliveira,65,101A,Alto,Administrar Furosemida,1.8,Penicilina,68,Comprometida
+2,José Santos,45,102B,Baixo,Avaliação de rotina,0.9,Nenhuma,82,Normal
+3,Ana Costa,72,103A,Médio,Coleta de exames,1.2,Dipirona,55,Leve redução
+4,Carlos Souza,50,201C,Alto,Ajuste de dosagem de antibiótico,2.1,Iodo,90,Comprometida
+5,Beatriz Lima,30,202A,Baixo,Aguardando alta médica,0.8,Nenhuma,65,Normal
