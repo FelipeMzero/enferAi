@@ -19,9 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadPacientes(forceUpdate = false) {
     if (forceUpdate) {
         document.getElementById('patient-list-container').innerHTML = `
-            <div style="text-align: center; padding: 2rem; color: var(--purple-ia);">
-                <i class="fa-solid fa-wand-magic-sparkles fa-spin fa-2x"></i>
-                <p style="margin-top: 1rem;">A IA está reavaliando os dados clínicos...</p>
+            <div class="loading-state">
+                <i class="fa-solid fa-atom fa-spin"></i>
+                <p>O Algoritmo de Priorização IA está re-processando os dados vitais...</p>
             </div>
         `;
     }
@@ -88,26 +88,26 @@ function renderDashboard(pacientes) {
         card.className = `patient-card ${riskClass}`;
         card.innerHTML = `
             <div class="patient-info">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
                     <span class="patient-name">${p.nome}</span>
                     <span class="badge ${badgeClass}">${riskIcon} Risco ${p.risco}</span>
                 </div>
                 <div class="patient-details">
+                    <span><i class="fa-solid fa-microchip"></i> ID: ${p.id}</span>
                     <span><i class="fa-solid fa-bed"></i> Leito: ${p.leito}</span>
-                    <span><i class="fa-solid fa-user"></i> Idade: ${p.idade}</span>
-                    <span title="Alergias"><i class="fa-solid fa-allergies"></i> Alergias: ${p.alergias}</span>
+                    <span><i class="fa-solid fa-dna"></i> Idade: ${p.idade}</span>
                 </div>
                 <div class="patient-task">
-                    <i class="fa-solid fa-clipboard-list" style="color: var(--blue-primary);"></i>
-                    Próxima tarefa: <strong>${p.tarefa_pendente}</strong>
+                    <i class="fa-solid fa-brain"></i>
+                    IA Sugere: <strong>${p.tarefa_pendente}</strong>
                 </div>
             </div>
             <div class="actions">
                 <button class="btn btn-ia" title="IA Assist" onclick="openIAAssist('${p.id}')">
-                    <i class="fa-solid fa-robot"></i> IA Assist
+                    <i class="fa-solid fa-robot"></i> Consultar IA
                 </button>
                 <button class="btn btn-primary" title="Ver Prontuário" onclick="openProntuario('${p.id}')">
-                    <i class="fa-solid fa-file-medical"></i> Ver Prontuário
+                    <i class="fa-solid fa-folder-medical"></i> Prontuário
                 </button>
             </div>
         `;
@@ -164,22 +164,41 @@ function openIAAssist(pacienteId) {
 
 function openProntuario(pacienteId) {
     const p = globalPacientes.find(p => p.id == pacienteId);
-    document.getElementById('modal-prontuario-title').innerText = `Prontuário: ${p.nome}`;
+    document.getElementById('modal-prontuario-title').innerText = `Dossiê Digital: ${p.nome}`;
     document.getElementById('modal-prontuario-body').innerHTML = `
-        <div style="display: grid; gap: 0.8rem;">
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">
-                <span><strong>Leito:</strong> ${p.leito}</span>
-                <span><strong>Idade:</strong> ${p.idade} anos</span>
+        <div style="display: grid; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; border-bottom: var(--glass-border); padding-bottom: 0.75rem;">
+                <span style="color: var(--text-muted)">Leito: <strong style="color: #fff">${p.leito}</strong></span>
+                <span style="color: var(--text-muted)">Biometria: <strong style="color: #fff">${p.idade} anos</strong></span>
             </div>
-            <div><strong>Peso:</strong> ${p.peso} kg</div>
-            <div><strong>Alergias:</strong> <span style="color:var(--red); font-weight:600;">${p.alergias}</span></div>
-            <div><strong>Creatinina:</strong> ${p.creatinina} mg/dL</div>
-            <div><strong>Função Renal:</strong> ${p.funcao_renal}</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="info-item">
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Peso Corpóreo</div>
+                    <div style="font-weight: 700;">${p.peso} kg</div>
+                </div>
+                <div class="info-item">
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Alergias</div>
+                    <div style="font-weight: 700; color: var(--red);">${p.alergias}</div>
+                </div>
+            </div>
+            <div style="padding: 1rem; background: rgba(15, 23, 42, 0.4); border-radius: 12px; border: var(--glass-border);">
+                <div style="font-size: 0.75rem; color: var(--lilac); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-vial"></i> BIOMARCADORES RENAIS
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Creatinina: <strong>${p.creatinina} mg/dL</strong></span>
+                    <span class="badge ${p.funcao_renal === 'Normal' ? 'badge-baixo' : 'badge-alto'}">${p.funcao_renal}</span>
+                </div>
+            </div>
             
-            <div style="margin-top: 1rem; padding: 1rem; background-color: var(--gray-light); border-radius: 8px;">
-                <strong style="color: var(--blue-primary);"><i class="fa-solid fa-stethoscope"></i> Resumo Clínico</strong><br>
-                Paciente encontra-se com risco classificado como <strong>${p.risco}</strong>.<br> 
-                Ação atual prioritária: <strong>${p.tarefa_pendente}</strong>.
+            <div style="margin-top: 0.5rem; padding: 1.25rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                <strong style="color: var(--lilac); display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-robot"></i> ANÁLISE PREDITIVA IA
+                </strong>
+                <p style="margin-top: 0.75rem; font-size: 0.9rem; line-height: 1.5; color: #e2e8f0;">
+                    Status de prioridade <strong>${p.risco}</strong> baseado em análise multivariada. 
+                    Recomendação imediata: <span style="color: var(--blue-primary); font-weight: 600;">${p.tarefa_pendente}</span>.
+                </p>
             </div>
         </div>
     `;
@@ -205,7 +224,7 @@ async function simulateIASearch() {
     chat.scrollTop = chat.scrollHeight;
 
     const loadingId = 'loading-' + Date.now();
-    chat.innerHTML += `<div id="${loadingId}" class="chat-message ia-message"><i class="fa-solid fa-circle-notch fa-spin"></i> Buscando no prontuário e na internet...</div>`;
+    chat.innerHTML += `<div id="${loadingId}" class="chat-message ia-message"><i class="fa-solid fa-atom fa-spin"></i> Consultando Redes Neurais e Dossiês Digitais...</div>`;
     chat.scrollTop = chat.scrollHeight;
 
     const qLower = question.toLowerCase();
@@ -254,8 +273,8 @@ async function simulateIACalculation() {
     resultDiv.classList.remove('hidden');
     resultDiv.style.borderLeft = "none";
     resultDiv.innerHTML = `
-        <div style="margin-bottom: 0.5rem"><i class="fa-solid fa-earth-americas fa-spin"></i> Consultando base médica na internet (${med})...</div>
-        <div><i class="fa-solid fa-user-doctor fa-spin"></i> Cruzando com histórico do paciente (Alergias: ${currentPaciente.alergias})...</div>
+        <div style="margin-bottom: 0.5rem"><i class="fa-solid fa-satellite-dish fa-spin"></i> Escaneando bases farmacológicas globais...</div>
+        <div><i class="fa-solid fa-microchip fa-spin"></i> Cruzando biometria do paciente (Alergias: ${currentPaciente.alergias})...</div>
     `;
     
     let medInfo = "Bula ou referência não encontrada na base online.";
@@ -275,8 +294,8 @@ async function simulateIACalculation() {
         let alertaAlergia = alergiasLower !== 'nenhuma' && (alergiasLower.includes(med.toLowerCase().substring(0,4)) || med.toLowerCase().includes(alergiasLower.substring(0,4)));
 
         let contentHTML = `
-            <div style="font-size: 0.8rem; color: var(--gray-medium); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #ddd;">
-                <strong><i class="fa-solid fa-book-medical"></i> Dados Resgatados da Internet:</strong><br>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: var(--glass-border);">
+                <strong><i class="fa-solid fa-database"></i> Big Data (Farmacologia):</strong><br>
                 ${medInfo}
             </div>
         `;

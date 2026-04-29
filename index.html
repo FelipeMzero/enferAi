@@ -19,52 +19,50 @@
                 <i class="fa-regular fa-bell"></i>
                 <div class="notification-badge"></div>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <div style="width: 40px; height: 40px; background-color: var(--blue-primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold;">
-                    JS
-                </div>
-                <div>
-                    <div style="font-weight: 600;">João Silva</div>
-                    <div style="font-size: 0.75rem; color: var(--gray-medium);">Enfermeiro</div>
+            <div class="user-profile">
+                <div class="user-avatar">JS</div>
+                <div class="user-meta">
+                    <div class="user-name">João Silva</div>
+                    <div class="user-role">Enfermeiro</div>
                 </div>
             </div>
         </div>
     </header>
 
     <main class="main-content">
-        <h1 class="dashboard-title">Dashboard de Priorização</h1>
+        <h1 class="dashboard-title">Monitoramento de Prioridades IA</h1>
         
         <div class="summary-cards">
-            <div class="card">
+            <div class="card card-total">
                 <div class="card-title">Total de Pacientes</div>
                 <div class="card-value" id="total-pacientes">0</div>
-                <div class="card-subtitle" style="color: var(--gray-medium);">Plantão atual</div>
+                <div class="card-subtitle">Plantão em Tempo Real</div>
             </div>
-            <div class="card">
+            <div class="card card-criticos">
                 <div class="card-title">Pacientes Críticos</div>
-                <div class="card-value" id="total-criticos" style="color: var(--red);">0</div>
-                <div class="card-subtitle" style="color: var(--red);">Requerem atenção imediata</div>
+                <div class="card-value" id="total-criticos">0</div>
+                <div class="card-subtitle">Atenção Crítica Necessária</div>
             </div>
-            <div class="card">
+            <div class="card card-estaveis">
                 <div class="card-title">Pacientes Estáveis</div>
-                <div class="card-value" id="total-estaveis" style="color: var(--green);">0</div>
-                <div class="card-subtitle" style="color: var(--green);">Rotina padrão</div>
+                <div class="card-value" id="total-estaveis">0</div>
+                <div class="card-subtitle">Monitoramento de Rotina</div>
             </div>
         </div>
 
         <div class="patient-list-header">
-            <h2>Lista de Pacientes (Prioridade IA)</h2>
+            <h2>Triagem Inteligente (Algoritmo IA)</h2>
             <button class="btn btn-ia" onclick="atualizarPrioridades()">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                Atualizar Prioridades
+                <i class="fa-solid fa-bolt-lightning"></i>
+                Re-avaliar Plantão
             </button>
         </div>
 
         <div class="patient-list" id="patient-list-container">
             <!-- Patient cards will be rendered here by JS -->
-            <div style="text-align: center; padding: 2rem; color: var(--gray-medium);">
-                <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
-                <p style="margin-top: 1rem;">Carregando dados dos pacientes...</p>
+            <div class="loading-state">
+                <i class="fa-solid fa-atom fa-spin"></i>
+                <p>Sincronizando base de dados clínicos...</p>
             </div>
         </div>
     </main>
